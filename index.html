@@ -12,17 +12,18 @@
       <div class="logo">⏱️</div>
       <div>
         <div class="title">Suivi des heures</div>
-        <div class="subtitle">6 chefs d’équipe · Calendrier · Congés/Repos · Base 39h</div>
+        <div class="subtitle">6 chefs d’équipe · Calendrier · Congés/Repos · Base 39h · Règles avancées · Manager</div>
       </div>
     </div>
 
     <div class="top-actions">
-      <button id="btnExport" class="btn secondary">Exporter (JSON)</button>
+      <button id="btnExport" class="btn secondary">Exporter (Chef)</button>
+      <button id="btnExportAll" class="btn secondary">Exporter (Global)</button>
       <label class="btn secondary filelike">
         Importer
         <input id="fileImport" type="file" accept="application/json" hidden />
       </label>
-      <button id="btnLogout" class="btn danger" title="Verrouiller l’onglet">Verrouiller</button>
+      <button id="btnLock" class="btn danger" title="Verrouiller l’onglet">Verrouiller</button>
     </div>
   </header>
 
@@ -41,20 +42,47 @@
 
       <div class="stats" id="stats"></div>
 
-      <div class="calendar">
-        <div class="cal-head">
-          <div>Lun</div><div>Mar</div><div>Mer</div><div>Jeu</div><div>Ven</div><div>Sam</div><div>Dim</div>
+      <!-- Vue Chef -->
+      <div id="chefView">
+        <div class="calendar">
+          <div class="cal-head">
+            <div>Lun</div><div>Mar</div><div>Mer</div><div>Jeu</div><div>Ven</div><div>Sam</div><div>Dim</div>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
         </div>
-        <div class="cal-grid" id="calGrid"></div>
+
+        <div class="hint">
+          Cliquer sur un jour pour saisir : <b>Travail</b> (heures), <b>Congé</b>, <b>Repos</b>, <b>RTT</b>, <b>Maladie</b>.
+          <br/>Heures sup : calcul <b>par semaine (lun→dim)</b> au-delà de <b>39h</b>, cumulées aussi <b>au mois</b> et <b>à l’année</b>.
+        </div>
       </div>
 
-      <div class="hint">
-        Cliquer sur un jour pour saisir : <b>Travail</b> (heures), <b>Congé</b>, <b>Repos</b>.
-        Les heures sup sont calculées <b>par semaine (lun→dim)</b> au-delà de <b>39h</b>.
+      <!-- Vue Manager -->
+      <div id="managerView" class="hidden">
+        <div class="row between wrap gap">
+          <div class="row gap wrap">
+            <span class="chip"><span>Vue</span> <span class="n">Manager</span></span>
+            <span class="chip"><span>Mois</span> <span class="n" id="mgrMonthLabel"></span></span>
+          </div>
+          <div class="row gap wrap">
+            <label class="btn secondary filelike">
+              Importer JSON Chefs (multi)
+              <input id="fileImportMulti" type="file" accept="application/json" multiple hidden />
+            </label>
+            <button class="btn secondary" id="btnMgrClear">Vider imports</button>
+          </div>
+        </div>
+
+        <div class="mgr-grid" id="mgrGrid"></div>
+
+        <div class="hint">
+          Le manager voit : (1) données locales de ce navigateur + (2) JSON importés des chefs.
+          Pour centraliser automatiquement (multi-téléphones), il faut une base (Firebase/Supabase).
+        </div>
       </div>
     </section>
 
-    <section class="card">
+    <section class="card" id="weeklyCard">
       <h2>Détail hebdomadaire (39h/semaine)</h2>
       <div class="weekly" id="weekly"></div>
     </section>
@@ -71,6 +99,8 @@
           <button type="button" class="seg" data-type="work">Travail</button>
           <button type="button" class="seg" data-type="leave">Congé</button>
           <button type="button" class="seg" data-type="rest">Repos</button>
+          <button type="button" class="seg" data-type="rtt">RTT</button>
+          <button type="button" class="seg" data-type="sick">Maladie</button>
         </div>
       </div>
 
@@ -78,6 +108,12 @@
         <label for="hoursInput">Heures (ex: 7.5)</label>
         <input id="hoursInput" type="number" min="0" step="0.25" inputmode="decimal" placeholder="0" />
         <div class="small">Astuce : 7h30 = 7.5</div>
+      </div>
+
+      <div class="field">
+        <label for="nightInput">Heures de nuit (optionnel)</label>
+        <input id="nightInput" type="number" min="0" step="0.25" inputmode="decimal" placeholder="0" />
+        <div class="small">Si non renseigné : calcul automatique possible via règle “plage nuit”, mais ici on reste simple.</div>
       </div>
 
       <div class="field">
