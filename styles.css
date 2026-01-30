@@ -278,3 +278,34 @@ input:focus{
   border-color: rgba(78,161,255,.55);
   box-shadow: 0 0 0 3px rgba(78,161,255,.12);
 }
+.hidden{ display:none !important; }
+
+.mgr-grid{
+  margin-top:12px;
+  display:grid;
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
+  gap:10px;
+}
+@media (max-width: 900px){
+  .mgr-grid{ grid-template-columns: 1fr; }
+}
+.mgr-card{
+  border:1px solid var(--line);
+  border-radius: 14px;
+  padding:10px;
+  background: rgba(0,0,0,.10);
+  display:grid;
+  gap:8px;
+}
+.mgr-card .h{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.mgr-card .name{ font-weight:800; }
+.mgr-row{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:8px;
+}
