@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Suivi heures – Chefs d’équipe</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">⏱️</div>
+      <div>
+        <div class="title">Suivi des heures</div>
+        <div class="subtitle">6 chefs d’équipe · Calendrier · Congés/Repos · Base 39h</div>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <button id="btnExport" class="btn secondary">Exporter (JSON)</button>
+      <label class="btn secondary filelike">
+        Importer
+        <input id="fileImport" type="file" accept="application/json" hidden />
+      </label>
+      <button id="btnLogout" class="btn danger" title="Verrouiller l’onglet">Verrouiller</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <div class="row between wrap gap">
+        <div class="tabs" id="tabs"></div>
+
+        <div class="month-nav">
+          <button class="btn" id="prevMonth">◀</button>
+          <div class="month-label" id="monthLabel"></div>
+          <button class="btn" id="nextMonth">▶</button>
+          <button class="btn secondary" id="todayBtn">Aujourd’hui</button>
+        </div>
+      </div>
+
+      <div class="stats" id="stats"></div>
+
+      <div class="calendar">
+        <div class="cal-head">
+          <div>Lun</div><div>Mar</div><div>Mer</div><div>Jeu</div><div>Ven</div><div>Sam</div><div>Dim</div>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+
+      <div class="hint">
+        Cliquer sur un jour pour saisir : <b>Travail</b> (heures), <b>Congé</b>, <b>Repos</b>.
+        Les heures sup sont calculées <b>par semaine (lun→dim)</b> au-delà de <b>39h</b>.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Détail hebdomadaire (39h/semaine)</h2>
+      <div class="weekly" id="weekly"></div>
+    </section>
+  </main>
+
+  <!-- Modal saisie -->
+  <dialog id="dayModal" class="modal">
+    <form method="dialog" id="dayForm" class="modal-body">
+      <div class="modal-title" id="modalTitle">Saisie</div>
+
+      <div class="field">
+        <label>Type</label>
+        <div class="segmented">
+          <button type="button" class="seg" data-type="work">Travail</button>
+          <button type="button" class="seg" data-type="leave">Congé</button>
+          <button type="button" class="seg" data-type="rest">Repos</button>
+        </div>
+      </div>
+
+      <div class="field" id="hoursField">
+        <label for="hoursInput">Heures (ex: 7.5)</label>
+        <input id="hoursInput" type="number" min="0" step="0.25" inputmode="decimal" placeholder="0" />
+        <div class="small">Astuce : 7h30 = 7.5</div>
+      </div>
+
+      <div class="field">
+        <label for="noteInput">Note (optionnel)</label>
+        <input id="noteInput" type="text" maxlength="80" placeholder="Ex: équipe A / intervention / etc." />
+      </div>
+
+      <div class="row between gap">
+        <button type="button" class="btn danger" id="btnDelete">Supprimer</button>
+        <div class="row gap">
+          <button class="btn secondary" value="cancel">Annuler</button>
+          <button class="btn primary" id="btnSave" value="save">Enregistrer</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Modal PIN -->
+  <dialog id="pinModal" class="modal">
+    <form method="dialog" id="pinForm" class="modal-body">
+      <div class="modal-title" id="pinTitle">Accès</div>
+      <div class="field">
+        <label for="pinInput">Code PIN</label>
+        <input id="pinInput" type="password" inputmode="numeric" autocomplete="one-time-code" placeholder="••••" />
+        <div class="small" id="pinHelp"></div>
+      </div>
+      <div class="row between gap">
+        <button class="btn secondary" value="cancel">Annuler</button>
+        <button class="btn primary" id="btnPinOk" value="ok">OK</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="./app.js"></script>
+</body>
+</html>
