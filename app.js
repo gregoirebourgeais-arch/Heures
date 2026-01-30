@@ -17,7 +17,7 @@ const TEAM_LEADS = [
 
 const MANAGER = { id: "manager", name: "Manager", pinHint: "PIN par défaut : 9999", defaultPin: "9999" };
 
-const WEEKLY_BASE_HOURS = 39;
+const WEEKLY_BASE_HOURS = 34.5;
 
 // Règles avancées (paramétrables ensuite)
 const RULES = {
